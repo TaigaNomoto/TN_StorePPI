@@ -25,7 +25,6 @@ import java.util.List;
 public class MainActivity extends WearableActivity implements SensorEventListener {
 
     private static final String TAG = "PPIActivity";    //Log用のタグ名
-    private TextView textView;
     private SensorManager sensorManager;
     private int cnt;
     private ArrayList<Float> ppiData;                   //測定値を格納する配列
@@ -46,7 +45,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
         buttonView = (TextView) findViewById(R.id.touched);
 
-        textView = findViewById(R.id.state);
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         List<Sensor> ppi_sensor = sensorManager.getSensorList(65547);
         sensorManager.registerListener(this, ppi_sensor.get(0), SensorManager.SENSOR_DELAY_FASTEST);
@@ -63,12 +61,12 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                     ppiData = new ArrayList();
                     timeData = new ArrayList();
                     DateData=new ArrayList();
-                    textView.setText(String.valueOf(cnt));
                     Log.d(TAG, "Button clicked (Start)");
+                    buttonView.setText("Started");
                 } else {                                        // 2回目のクリックでデータを保存
                     state = 0;
-                    textView.setText("Waiting");
                     Log.d(TAG, "Button clicked (Stop)");
+                    buttonView.setText("Stopped");
                     createFile();
                 }
             }
@@ -77,19 +75,19 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     }
 
     public void count_1(View view){
-        buttonView.setText("Button1 was pressed\n ");
+        buttonView.setText("Button1 was pressed");
         labelFileOutput(1);
     }
     public void count_2(View view){
-        buttonView.setText("Button2 was pressed\n ");
+        buttonView.setText("Button2 was pressed");
         labelFileOutput(2);
     }
     public void count_3(View view){
-        buttonView.setText("Button3 was pressed\n ");
+        buttonView.setText("Button3 was pressed");
         labelFileOutput(3);
     }
     public void count_4(View view){
-        buttonView.setText("Button4 was pressed\n ");
+        buttonView.setText("Button4 was pressed");
         labelFileOutput(4);
     }
 
@@ -177,7 +175,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             }
             timestamp = event.timestamp;
             cnt++;
-            textView.setText(String.valueOf(cnt));
             Log.d(TAG, "ppi:"+ cnt + ", 0:" + event.values[0] + "(stored) " + Math.round(time));
             ppiData.add(event.values[0]);
             timeData.add(time);
