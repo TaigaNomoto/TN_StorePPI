@@ -175,7 +175,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             }
             timestamp = event.timestamp;
             cnt++;
-            Log.d(TAG, "ppi:"+ cnt + ", 0:" + event.values[0] + "(stored) " + Math.round(time));
+            Log.d(TAG, "ppi:"+ cnt + ", 0:" + event.values[0] + ", 1(信頼度？):" + event.values[1] +", time:" + Math.round(time));
             ppiData.add(event.values[0]);
             timeData.add(time);
             DateData.add(db);
