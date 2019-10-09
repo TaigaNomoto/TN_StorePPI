@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:onClick="count_1"
+                android:onClick="onClick"
                 android:text="pleasure"
                 android:textSize="11sp" />
 
@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:onClick="count_2"
+                android:onClick="onClick"
                 android:text="excitment"
                 android:textSize="11sp" />
         </LinearLayout>
@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:onClick="count_3"
+                android:onClick="onClick"
                 android:text="irritation"
                 android:textSize="11sp" />
 
@@ -80,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:onClick="count_4"
+                android:onClick="onClick"
                 android:text="calm down"
                 android:textSize="11sp" />
         </LinearLayout>

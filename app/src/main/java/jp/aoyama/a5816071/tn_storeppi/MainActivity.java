@@ -30,11 +30,16 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     private ArrayList<Float> ppiData;                   //測定値を格納する配列
     private ArrayList<Float> timeData;                  //測定時間を格納する配列
     private ArrayList<Float> DateData;
+    private ArrayList<Float> stateData;
+    private ArrayList<Float> newTimeData;
+    private ArrayList<Float> newPpiData;
     private int state = 0;                              //測定中(1) or 待機中(0)
+    private float buttonState=0;
     private static final float NS2MS = 1.0f / 1000000.0f;
     private float time;
     private float timestamp;
     private TextView buttonView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,9 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                     ppiData = new ArrayList();
                     timeData = new ArrayList();
                     DateData=new ArrayList();
+                    stateData = new ArrayList();
+                    newTimeData = new ArrayList();
+                    newPpiData=new ArrayList();
                     Log.d(TAG, "Button clicked (Start)");
                     buttonView.setText("Started");
                 } else {                                        // 2回目のクリックでデータを保存
@@ -74,21 +82,24 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         Log.d(TAG, "Created");
     }
 
-    public void count_1(View view){
-        buttonView.setText("Button1 was pressed");
-        labelFileOutput(1);
-    }
-    public void count_2(View view){
-        buttonView.setText("Button2 was pressed");
-        labelFileOutput(2);
-    }
-    public void count_3(View view){
-        buttonView.setText("Button3 was pressed");
-        labelFileOutput(3);
-    }
-    public void count_4(View view){
-        buttonView.setText("Button4 was pressed");
-        labelFileOutput(4);
+    public void onClick(View v){
+        if (v.getId() == R.id.button1) {
+            buttonView.setText("Button1 was pressed");
+            buttonState=1;
+            //labelFileOutput(1);
+        } else if (v.getId() == R.id.button2) {
+            buttonView.setText("Button2 was pressed");
+            buttonState=2;
+            //labelFileOutput(2);
+        } else if (v.getId() == R.id.button3) {
+            buttonView.setText("Button3 was pressed");
+            //labelFileOutput(3);
+            buttonState=3;
+        } else if (v.getId() == R.id.button4) {
+            buttonView.setText("Button4 was pressed");
+            //labelFileOutput(4);
+            buttonState=4;
+        }
     }
 
     @Override
@@ -100,7 +111,9 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     private void createFile() {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_kkmmss");
+        SimpleDateFormat f = new SimpleDateFormat("kkmmss");
         String filename = sdf.format(date) + ".csv";
+        String newfilename = "label"+f.format(date) + ".csv";
         Log.d(TAG, filename);
         try {
             FileOutputStream fout = openFileOutput(filename, MODE_PRIVATE);
@@ -124,15 +137,38 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             Log.d(TAG, "Cannot write string.");
             e.printStackTrace();
         }
+        try {
+            FileOutputStream fout2 = openFileOutput(newfilename, MODE_PRIVATE);
+            int j;
+            String comma = ",";
+            String newline = "\n";
+            for (j = 0; j < stateData.size(); j++) {
+                fout2.write(String.valueOf(stateData.get(j)).getBytes());
+                fout2.write(comma.getBytes());
+                fout2.write(String.valueOf(newTimeData.get(j)).getBytes());
+                fout2.write(comma.getBytes());
+                fout2.write(String.valueOf(newPpiData.get(j)).getBytes());
+                fout2.write(newline.getBytes());
+            }
+            fout2.close();
+            Log.d(TAG, "File created.");
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "Cannot open file.");
+            e.printStackTrace();
+        } catch (IOException e) {
+            Log.d(TAG, "Cannot write string.");
+            e.printStackTrace();
+        }
     }
 
     private void labelFileOutput(int number){
         OutputStream out;
         Date date=new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("kkmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddkkmmss");
+        String filename = sdf.format(date) + "label";
         String saveDate = sdf.format(date);
         try {
-            out = openFileOutput("label", MODE_PRIVATE | MODE_APPEND);
+            out = openFileOutput(filename, MODE_PRIVATE | MODE_APPEND);
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, "UTF-8"));
 
             writer.append(number + ", " + saveDate +"\n");
@@ -175,10 +211,16 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             }
             timestamp = event.timestamp;
             cnt++;
-            Log.d(TAG, "ppi:"+ cnt + ", 0:" + event.values[0] + "(stored) " + Math.round(time));
+            Log.d(TAG, "ppi:"+ cnt + ", 0:" + event.values[0] + "(stored) "+buttonState+"(buttonState) "+event.values[2]+"(values[2])" + Math.round(time));
             ppiData.add(event.values[0]);
             timeData.add(time);
             DateData.add(db);
+            if(buttonState!=0){
+                stateData.add(buttonState);
+                newTimeData.add(time);
+                newPpiData.add(event.values[0]);
+                buttonState=0;
+            }
         } else {
             Log.d(TAG, "ppi:"+ cnt + ", 0:" + event.values[0] + "(no)");
         }
