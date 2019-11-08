@@ -112,8 +112,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_kkmmss");
         SimpleDateFormat f = new SimpleDateFormat("kkmmss");
-        String filename = sdf.format(date) + ".csv";
-        String newfilename = "label"+f.format(date) + ".csv";
+        String filename = sdf.format(date) + "_storePPI.csv";
+        String newfilename = "label"+f.format(date) + "_storePPI.csv";
         Log.d(TAG, filename);
         try {
             FileOutputStream fout = openFileOutput(filename, MODE_PRIVATE);
